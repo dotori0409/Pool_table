@@ -32,12 +32,6 @@ public class App extends Application {
         newGame(primaryStage,"src/main/resources/config_easy.json");
     }
 
-    public void timer(){
-        timer = new Timer(1000, new ActionListener(){
-            @Override
-            
-        })
-    }
     public void newGame(Stage primaryStage, String config){
         GameManager gameManager = new GameManager();
         String configPath = config;
@@ -64,7 +58,7 @@ public class App extends Application {
         buttonEasy.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonEasy);
         buttonEasy.setOnAction(e ->{
-            newMode(primaryStage,"src/main/resources/config_easy.json");
+            newGame(primaryStage,"src/main/resources/config_easy.json");
         });
 
         Button buttonNormal = new Button("Normal");
@@ -73,7 +67,7 @@ public class App extends Application {
         buttonNormal.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonNormal);
         buttonNormal.setOnAction(e ->{
-            newMode(primaryStage,"src/main/resources/config_Normal.json");
+            newGame(primaryStage,"src/main/resources/config_Normal.json");
         });
 
         Button buttonHard = new Button("Hard");
@@ -82,7 +76,7 @@ public class App extends Application {
         buttonHard.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonHard);
         buttonHard.setOnAction(e ->{
-            newMode(primaryStage,"src/main/resources/config_hard.json");
+            newGame(primaryStage,"src/main/resources/config_hard.json");
         });
     }
 }
