@@ -12,8 +12,6 @@ import javafx.stage.Stage;
 
 /** Main application entry point. */
 public class App extends Application {
-    private Timer timer;
-
     /**
      * @param args First argument is the path to the config file
      */
@@ -43,6 +41,11 @@ public class App extends Application {
         ReaderFactory ballFactory = new BallReaderFactory();
         Reader ballReader = ballFactory.buildReader();
         ballReader.parse(configPath, gameManager);
+
+        ReaderFactory pockeFactory = new PocketReaderFactory();
+        Reader pocketReader = pockeFactory.buildReader();
+        pocketReader.parse(configPath, gameManager);
+
         gameManager.buildManager();
 
         // START GAME MANAGER

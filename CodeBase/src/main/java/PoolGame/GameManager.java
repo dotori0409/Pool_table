@@ -1,6 +1,9 @@
 package PoolGame;
 
 import PoolGame.objects.*;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
@@ -11,9 +14,12 @@ import javafx.animation.Timeline;
 import javafx.scene.shape.Line;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.paint.Paint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import javafx.util.Duration;
@@ -25,11 +31,13 @@ import javafx.util.Pair;
 public class GameManager {
     private Table table;
     private ArrayList<Ball> balls = new ArrayList<Ball>();
+    ArrayList<Pocket> pockets = new ArrayList<Pocket>();
     private Line cue;
     private Pane pane;
     private boolean cueSet = false;
     private boolean cueActive = false;
     private boolean winFlag = false;
+    private Text text = new Text();
     private int score = 0;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
@@ -61,6 +69,7 @@ public class GameManager {
         Canvas canvas = new Canvas(table.getxLength() + TABLEBUFFER * 2, table.getyLength() + TABLEBUFFER * 2);
         gc = canvas.getGraphicsContext2D();
         pane.getChildren().add(canvas);
+        pane.getChildren().add(text);
     }
 
     /**
@@ -84,7 +93,7 @@ public class GameManager {
         gc.fillRect(TABLEBUFFER, TABLEBUFFER, table.getxLength(), table.getyLength());
 
         // Fill in Pockets
-        for (Pocket pocket : table.getPockets()) {
+        for (Pocket pocket : pockets) {
             gc.setFill(Paint.valueOf("black"));
             gc.fillOval(pocket.getxPos() - pocket.getRadius(), pocket.getyPos() - pocket.getRadius(),
                     pocket.getRadius() * 2, pocket.getRadius() * 2);
@@ -121,6 +130,12 @@ public class GameManager {
      * Used Exercise 6 as reference.
      */
     public void tick() {
+        String scoreText = "Score: "+ Integer.toString(score);
+        text.setText(scoreText);
+        text.setX(table.getxLength()/2);
+        text.setY(20);
+        text.setFont(Font.font(null, FontWeight.BOLD, 20));
+
         if (score == balls.size() - 1) {
             winFlag = true;
         }
@@ -136,13 +151,13 @@ public class GameManager {
             double height = table.getyLength();
 
             // Check if ball landed in pocket
-            for (Pocket pocket : table.getPockets()) {
+            for (Pocket pocket : pockets) {
                 if (pocket.isInPocket(ball)) {
                     if (ball.isCue()) {
                         this.reset();
                     } else {
                         if (ball.remove()) {
-                            score++;
+                            score+= ball.getScore(ball.getColour());
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -239,6 +254,15 @@ public class GameManager {
      */
     public void setBalls(ArrayList<Ball> balls) {
         this.balls = balls;
+    }
+
+    /**
+     * Sets the pockets of the game.
+     * 
+     * @param pockets
+     */
+    public void setPockets(ArrayList<Pocket> pockets) {
+        this.pockets = pockets;
     }
 
     /**
