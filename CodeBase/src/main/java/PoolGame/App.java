@@ -6,9 +6,13 @@ import javafx.application.Application;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+
 /** Main application entry point. */
 public class App extends Application {
+<<<<<<< HEAD
 
+=======
+>>>>>>> d8426ce0292071dc221a9b2b36fc7f8ddea7f799
     /**
      * @param args First argument is the path to the config file
      */
@@ -22,12 +26,13 @@ public class App extends Application {
      * 
      * @param primaryStage The primary stage for the application.
      */
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws InterruptedException {
         //Set easy mode as default
         newGame(primaryStage,"src/main/resources/config_easy.json");
     }
 
-    public void newGame(Stage primaryStage, String config){
+    public void newGame(Stage primaryStage, String config) throws InterruptedException{
+
         GameManager gameManager = new GameManager();
         String configPath = config;
 
@@ -38,6 +43,11 @@ public class App extends Application {
         ReaderFactory ballFactory = new BallReaderFactory();
         Reader ballReader = ballFactory.buildReader();
         ballReader.parse(configPath, gameManager);
+
+        ReaderFactory pockeFactory = new PocketReaderFactory();
+        Reader pocketReader = pockeFactory.buildReader();
+        pocketReader.parse(configPath, gameManager);
+
         gameManager.buildManager();
 
         // START GAME MANAGER
@@ -53,7 +63,11 @@ public class App extends Application {
         buttonEasy.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonEasy);
         buttonEasy.setOnAction(e ->{
-            newGame(primaryStage,"src/main/resources/config_easy.json");
+            try {
+                newGame(primaryStage,"src/main/resources/config_easy.json");
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         });
 
         Button buttonNormal = new Button("Normal");
@@ -62,7 +76,12 @@ public class App extends Application {
         buttonNormal.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonNormal);
         buttonNormal.setOnAction(e ->{
-            newGame(primaryStage,"src/main/resources/config_Normal.json");
+            try {
+                newGame(primaryStage,"src/main/resources/config_Normal.json");
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
 
         Button buttonHard = new Button("Hard");
@@ -71,7 +90,12 @@ public class App extends Application {
         buttonHard.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonHard);
         buttonHard.setOnAction(e ->{
-            newGame(primaryStage,"src/main/resources/config_hard.json");
+            try {
+                newGame(primaryStage,"src/main/resources/config_hard.json");
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
     }
 }

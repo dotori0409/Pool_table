@@ -227,4 +227,24 @@ public class Ball {
         return isActive;
     }
 
+    public int getScore(Paint colour){
+        if(colour ==  Paint.valueOf("red")){
+            return 1;
+        }else if(colour == Paint.valueOf("yellow")){
+            return 2;
+        }else if(colour == Paint.valueOf("green")){
+            return 3;
+        }else if(colour == Paint.valueOf("brown")){
+            return 4;
+        }else if(colour == Paint.valueOf("blue")){
+            return 5;
+        }else if(colour == Paint.valueOf("purple")){
+            return 6;
+        }else if(colour == Paint.valueOf("black")){
+            return 7;
+        }else {
+            return 8;
+        }
+    }
+
 }

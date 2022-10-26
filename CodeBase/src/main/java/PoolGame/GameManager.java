@@ -1,5 +1,6 @@
 package PoolGame;
 
+import PoolGame.Timer.Timer;
 import PoolGame.objects.*;
 import PoolGame.undo.BallRecord;
 import PoolGame.undo.CareTaker;
@@ -9,12 +10,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import java.util.ArrayList;
+
+import javafx.geometry.Point2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.paint.Paint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,17 +37,21 @@ import javafx.util.Pair;
 public class GameManager {
     private Table table;
     private ArrayList<Ball> balls = new ArrayList<Ball>();
+    ArrayList<Pocket> pockets = new ArrayList<Pocket>();
     private Line cue;
     private Pane pane;
     private boolean cueSet = false;
     private boolean cueActive = false;
     private boolean winFlag = false;
+    private Text text = new Text();
     private int score = 0;
     private boolean moving = false;
 
     private int record = 1;
     private Map<Ball, BallRecord> records = new HashMap<>(); //memento
     private CareTaker caretaker = new CareTaker();
+    private Timer timer;
+    private boolean reset_flag = false;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -71,7 +82,13 @@ public class GameManager {
      */
     public void run() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(17),
-                t -> this.draw()));
+                t -> {
+                    try {
+                        this.draw();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -79,9 +96,10 @@ public class GameManager {
     /**
      * Builds GameManager properties such as initialising pane, canvas,
      * graphicscontext, and setting events related to clicks.
+     * @throws InterruptedException
      */
 
-    public void buildManager() {
+    public void buildManager() throws InterruptedException {
         pane = new Pane();
         setClickEvents(pane);
         this.scene = new Scene(pane, table.getxLength() + TABLEBUFFER * 2, table.getyLength() + TABLEBUFFER * 2);
@@ -101,13 +119,21 @@ public class GameManager {
                 // }                
             }
         });
+        pane.getChildren().add(text);
+        timer = new Timer(pane);
     }
 
     /**
      * Draws all relevant items - table, cue, balls, pockets - onto Canvas.
      * Used Exercise 6 as reference.
+     * @throws InterruptedException
      */
-    private void draw() {
+    private void draw() throws InterruptedException {
+        timer.time();
+        if(reset_flag){
+            timer.resetTime();
+            reset_flag = false;
+        }
         tick();
 
         // Fill in background
@@ -124,7 +150,7 @@ public class GameManager {
         gc.fillRect(TABLEBUFFER, TABLEBUFFER, table.getxLength(), table.getyLength());
 
         // Fill in Pockets
-        for (Pocket pocket : table.getPockets()) {
+        for (Pocket pocket : pockets) {
             gc.setFill(Paint.valueOf("black"));
             gc.fillOval(pocket.getxPos() - pocket.getRadius(), pocket.getyPos() - pocket.getRadius(),
                     pocket.getRadius() * 2, pocket.getRadius() * 2);
@@ -170,7 +196,6 @@ public class GameManager {
             gc.strokeText("Win and bye", table.getxLength() / 2 + TABLEBUFFER - 180,
                     table.getyLength() / 2 + TABLEBUFFER);
         }
-
     }
 
     /**
@@ -178,6 +203,12 @@ public class GameManager {
      * Used Exercise 6 as reference.
      */
     public void tick() {
+        String scoreText = "Score: "+ Integer.toString(score);
+        text.setText(scoreText);
+        text.setX(table.getxLength()/2);
+        text.setY(20);
+        text.setFont(Font.font(null, FontWeight.BOLD, 20));
+
         if (score == balls.size() - 1) {
             winFlag = true;
         }
@@ -193,13 +224,14 @@ public class GameManager {
             double height = table.getyLength();
 
             // Check if ball landed in pocket
-            for (Pocket pocket : table.getPockets()) {
+            for (Pocket pocket : pockets) {
                 if (pocket.isInPocket(ball)) {
                     if (ball.isCue()) {
                         this.reset();
+                        reset_flag = true;
                     } else {
                         if (ball.remove()) {
-                            score++;
+                            score+= ball.getScore(ball.getColour());
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -296,6 +328,15 @@ public class GameManager {
      */
     public void setBalls(ArrayList<Ball> balls) {
         this.balls = balls;
+    }
+
+    /**
+     * Sets the pockets of the game.
+     * 
+     * @param pockets
+     */
+    public void setPockets(ArrayList<Pocket> pockets) {
+        this.pockets = pockets;
     }
 
     /**
