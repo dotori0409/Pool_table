@@ -9,10 +9,7 @@ import javafx.stage.Stage;
 
 /** Main application entry point. */
 public class App extends Application {
-<<<<<<< HEAD
 
-=======
->>>>>>> d8426ce0292071dc221a9b2b36fc7f8ddea7f799
     /**
      * @param args First argument is the path to the config file
      */
@@ -79,7 +76,6 @@ public class App extends Application {
             try {
                 newGame(primaryStage,"src/main/resources/config_Normal.json");
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -93,7 +89,6 @@ public class App extends Application {
             try {
                 newGame(primaryStage,"src/main/resources/config_hard.json");
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });

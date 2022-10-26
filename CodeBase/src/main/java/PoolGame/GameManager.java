@@ -1,7 +1,7 @@
 package PoolGame;
 
-import PoolGame.Timer.Timer;
 import PoolGame.objects.*;
+import PoolGame.objects.Timer.Timer;
 import PoolGame.undo.BallRecord;
 import PoolGame.undo.CareTaker;
 import PoolGame.undo.Memento;
@@ -10,13 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import java.util.ArrayList;
-
 import javafx.geometry.Point2D;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
@@ -46,8 +42,7 @@ public class GameManager {
     private Text text = new Text();
     private int score = 0;
     private boolean moving = false;
-
-    private int record = 1;
+    private int record = 0;
     private Map<Ball, BallRecord> records = new HashMap<>(); //memento
     private CareTaker caretaker = new CareTaker();
     private Timer timer;
@@ -60,22 +55,13 @@ public class GameManager {
     private Scene scene;
     private GraphicsContext gc;
 
+    //adds prev data to caretaker
     public void revertBalls(Ball ball) {
-        BallRecord ballRecord = records.get(ball);    
-        if(record != 1){
-            Memento memento = ballRecord.revert(record-1, record);
-            caretaker.addMemento(ball, memento);
-        } else {
-            System.out.println("No movement has been made");
-        }   
+        BallRecord ballRecord = records.get(ball);   
+        //prev data
+        Memento memento = ballRecord.revert(record);
+        caretaker.addMemento(ball, memento);
     }
-
-    // public void returnBall(Ball ball) {
-    //     Memento memento = caretaker.getMemento(ball);
-    //     if (memento == null) { return; }
-    //     BallRecord ballRecord = records.get(ball);
-    //     ballRecord.restore(memento);
-    // }
 
     /**
      * Initialises timeline and cycle count.
@@ -109,18 +95,29 @@ public class GameManager {
         Button undo = new Button("Undo");
         pane.getChildren().add(undo);
         undo.setOnAction(e ->{
+            // boolean changes = false;
             for(Ball ball: balls){
-                // BallRecord ballRecord = records.get(ball);    
-                // if(record != 1){
-                //     Memento memento = ballRecord.revert(record-1, record);
-                //     caretaker.addMemento(ball, memento);
-                // } else {
-                //     System.out.println("No movement has been made");
-                // }                
+                // changess = true;
+                revertBalls(ball);
+                // System.out.println(record);
+                // System.out.println(caretaker.getMemento(ball).getState());
+                // ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
+                // ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
+                // System.out.println(caretaker.getMemento(ball).getState());
             }
+            // if(!changes){
+            //     System.out.println("No movement has been made");
+            // }
         });
         pane.getChildren().add(text);
         timer = new Timer(pane);
+        for(Ball ball: balls){
+            BallRecord ballRec = new BallRecord(ball);
+            ballRec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
+            records.put(ball,ballRec);
+            Memento memento = new Memento(ballRec.getRecord());
+            caretaker.addMemento(ball, memento);
+        }
     }
 
     /**
@@ -178,15 +175,24 @@ public class GameManager {
                 moving_flag = true;
             }
         }
-        //Add info to memento
-        if(moving && moving_flag == false){
+        //Add info to memento if all balls are at a stop
+        if((moving && moving_flag == false)){
             moving = false;
+            record++;
             for(Ball ball: balls){
-                BallRecord brec = new BallRecord(ball);
-                brec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
-                records.put(ball,brec);
+                BallRecord ballRec = new BallRecord(ball);
+                ballRec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
+                records.put(ball,ballRec);
+                Memento memento = caretaker.getMemento(ball);
+                memento.getState().put(record,new Point2D(ball.getxPos(), ball.getyPos()));
+                caretaker.addMemento(ball, memento);
             }
-            record += 1;
+            //need to get records to add data everytime the ball moves
+            //check to see if int 1,2,3... exists within ballrecord
+            for (BallRecord value : records.values()) {
+                System.out.println(value.getRecord());
+            }
+            
         }
 
         // Win

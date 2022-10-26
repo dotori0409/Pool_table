@@ -1,4 +1,4 @@
-package PoolGame.Timer;
+package PoolGame.objects.Timer;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
