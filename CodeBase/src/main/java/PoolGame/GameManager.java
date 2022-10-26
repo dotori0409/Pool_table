@@ -1,13 +1,11 @@
 package PoolGame;
 
+import PoolGame.Timer.Timer;
 import PoolGame.objects.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 
@@ -19,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.scene.paint.Paint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import javafx.util.Duration;
@@ -39,6 +36,8 @@ public class GameManager {
     private boolean winFlag = false;
     private Text text = new Text();
     private int score = 0;
+    private Timer timer;
+    private boolean reset_flag = false;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -52,7 +51,14 @@ public class GameManager {
      */
     public void run() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(17),
-                t -> this.draw()));
+                t -> {
+                    try {
+                        this.draw();
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -60,9 +66,10 @@ public class GameManager {
     /**
      * Builds GameManager properties such as initialising pane, canvas,
      * graphicscontext, and setting events related to clicks.
+     * @throws InterruptedException
      */
 
-    public void buildManager() {
+    public void buildManager() throws InterruptedException {
         pane = new Pane();
         setClickEvents(pane);
         this.scene = new Scene(pane, table.getxLength() + TABLEBUFFER * 2, table.getyLength() + TABLEBUFFER * 2);
@@ -70,13 +77,20 @@ public class GameManager {
         gc = canvas.getGraphicsContext2D();
         pane.getChildren().add(canvas);
         pane.getChildren().add(text);
+        timer = new Timer(pane);
     }
 
     /**
      * Draws all relevant items - table, cue, balls, pockets - onto Canvas.
      * Used Exercise 6 as reference.
+     * @throws InterruptedException
      */
-    private void draw() {
+    private void draw() throws InterruptedException {
+        timer.time();
+        if(reset_flag){
+            timer.resetTime();
+            reset_flag = false;
+        }
         tick();
 
         // Fill in background
@@ -155,6 +169,7 @@ public class GameManager {
                 if (pocket.isInPocket(ball)) {
                     if (ball.isCue()) {
                         this.reset();
+                        reset_flag = true;
                     } else {
                         if (ball.remove()) {
                             score+= ball.getScore(ball.getColour());
