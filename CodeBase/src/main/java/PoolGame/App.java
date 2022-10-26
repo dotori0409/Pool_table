@@ -2,17 +2,12 @@ package PoolGame;
 
 import PoolGame.config.*;
 
-import java.util.List;
-
-import javax.swing.Timer;
-
 import javafx.application.Application;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 /** Main application entry point. */
 public class App extends Application {
-    private Timer timer;
 
     /**
      * @param args First argument is the path to the config file

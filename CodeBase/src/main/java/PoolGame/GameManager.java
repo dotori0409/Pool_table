@@ -1,19 +1,24 @@
 package PoolGame;
 
 import PoolGame.objects.*;
-import java.util.ArrayList;
+import PoolGame.undo.BallRecord;
+import PoolGame.undo.CareTaker;
+import PoolGame.undo.Memento;
 
-import javafx.geometry.Point2D;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Line;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Paint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 import javafx.util.Duration;
@@ -31,6 +36,11 @@ public class GameManager {
     private boolean cueActive = false;
     private boolean winFlag = false;
     private int score = 0;
+    private boolean moving = false;
+
+    private int record = 1;
+    private Map<Ball, BallRecord> records = new HashMap<>(); //memento
+    private CareTaker caretaker = new CareTaker();
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -38,6 +48,23 @@ public class GameManager {
 
     private Scene scene;
     private GraphicsContext gc;
+
+    public void revertBalls(Ball ball) {
+        BallRecord ballRecord = records.get(ball);    
+        if(record != 1){
+            Memento memento = ballRecord.revert(record-1, record);
+            caretaker.addMemento(ball, memento);
+        } else {
+            System.out.println("No movement has been made");
+        }   
+    }
+
+    // public void returnBall(Ball ball) {
+    //     Memento memento = caretaker.getMemento(ball);
+    //     if (memento == null) { return; }
+    //     BallRecord ballRecord = records.get(ball);
+    //     ballRecord.restore(memento);
+    // }
 
     /**
      * Initialises timeline and cycle count.
@@ -61,6 +88,19 @@ public class GameManager {
         Canvas canvas = new Canvas(table.getxLength() + TABLEBUFFER * 2, table.getyLength() + TABLEBUFFER * 2);
         gc = canvas.getGraphicsContext2D();
         pane.getChildren().add(canvas);
+        Button undo = new Button("Undo");
+        pane.getChildren().add(undo);
+        undo.setOnAction(e ->{
+            for(Ball ball: balls){
+                // BallRecord ballRecord = records.get(ball);    
+                // if(record != 1){
+                //     Memento memento = ballRecord.revert(record-1, record);
+                //     caretaker.addMemento(ball, memento);
+                // } else {
+                //     System.out.println("No movement has been made");
+                // }                
+            }
+        });
     }
 
     /**
@@ -94,7 +134,7 @@ public class GameManager {
         if (this.cue != null && cueActive) {
             gc.strokeLine(cue.getStartX(), cue.getStartY(), cue.getEndX(), cue.getEndY());
         }
-
+        
         for (Ball ball : balls) {
             if (ball.isActive()) {
                 gc.setFill(ball.getColour());
@@ -103,7 +143,24 @@ public class GameManager {
                         ball.getRadius() * 2,
                         ball.getRadius() * 2);
             }
+        }
 
+        //Check if moving is over
+        boolean moving_flag = false;
+        for(Ball ball: balls){
+            if(moving && (Math.abs(ball.getxVel()) > 0.01 || Math.abs(ball.getyVel()) > 0.01)){
+                moving_flag = true;
+            }
+        }
+        //Add info to memento
+        if(moving && moving_flag == false){
+            moving = false;
+            for(Ball ball: balls){
+                BallRecord brec = new BallRecord(ball);
+                brec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
+                records.put(ball,brec);
+            }
+            record += 1;
         }
 
         // Win
@@ -302,6 +359,7 @@ public class GameManager {
         pane.setOnMouseReleased(event -> {
             cueSet = true;
             cueActive = false;
+            moving = true;
         });
     }
 
