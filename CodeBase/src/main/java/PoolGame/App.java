@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+
 /** Main application entry point. */
 public class App extends Application {
     /**
@@ -61,7 +62,6 @@ public class App extends Application {
             try {
                 newGame(primaryStage,"src/main/resources/config_easy.json");
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });

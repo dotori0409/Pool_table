@@ -10,7 +10,7 @@ public class Timer {
     private Counter count;
 
     public Timer(Pane pane) throws InterruptedException{
-        timer = new Text("Time: 00 : 00 : 000");
+        timer = new Text("Time: 00 : 00");
         timer.setX(40);
         timer.setY(20);
         timer.setFont(Font.font(null, FontWeight.BOLD, 15));
@@ -25,10 +25,10 @@ public class Timer {
     }
 
     public void time() throws InterruptedException{
-        timer.setText("Time: "+ String.format("%02d", count.getMin())+" : "+String.format("%02d", count.getSec())+" : "+String.format("%03d", count.getMSec())); 
-        count.setMSec(count.getMSec()+1);
+        timer.setText("Time: "+ String.format("%02d", count.getMin())+" : "+String.format("%02d", count.getSec())); 
         Thread.sleep(1);
-        if (count.getMSec()==999){
+        count.setMSec(count.getMSec()+1);
+        if (count.getMSec()==100){
             count.setSec(count.getSec()+1);
             count.setMSec(0);
         }

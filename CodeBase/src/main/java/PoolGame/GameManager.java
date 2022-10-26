@@ -55,7 +55,6 @@ public class GameManager {
                     try {
                         this.draw();
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }));
@@ -136,7 +135,6 @@ public class GameManager {
             gc.strokeText("Win and bye", table.getxLength() / 2 + TABLEBUFFER - 180,
                     table.getyLength() / 2 + TABLEBUFFER);
         }
-
     }
 
     /**
