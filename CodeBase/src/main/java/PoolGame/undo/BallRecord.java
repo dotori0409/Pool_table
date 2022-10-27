@@ -37,15 +37,12 @@ public class BallRecord {
     public Memento revert(int currentRecord) {
         //1. generate Deep copy of current record
         Map<Integer, Point2D> copyRecords = copyRecords();
-        
+
         //reset (has nothing to do with Memento)
-        int recordToRemove = currentRecord;
-        for(int i = 0; i < currentRecord; i++) {
-            System.out.println(recordToRemove-1);
-            System.out.println(records.get(recordToRemove-1));
-            records.remove(recordToRemove);
-            recordToRemove--;
+        if(currentRecord>0){
+            records.remove(copyRecords);
         }
+        
 
         //2. Save the current state inside a memento
         return new Memento(copyRecords);

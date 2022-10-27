@@ -47,6 +47,7 @@ public class GameManager {
     private CareTaker caretaker = new CareTaker();
     private Timer timer;
     private boolean reset_flag = false;
+    private boolean changes = false;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -56,10 +57,10 @@ public class GameManager {
     private GraphicsContext gc;
 
     //adds prev data to caretaker
-    public void revertBalls(Ball ball) {
+    public void revertBalls(Ball ball,int currentRecord) {
         BallRecord ballRecord = records.get(ball);   
         //prev data
-        Memento memento = ballRecord.revert(record);
+        Memento memento = ballRecord.revert(currentRecord);
         caretaker.addMemento(ball, memento);
     }
 
@@ -95,25 +96,28 @@ public class GameManager {
         Button undo = new Button("Undo");
         pane.getChildren().add(undo);
         undo.setOnAction(e ->{
-            // boolean changes = false;
             for(Ball ball: balls){
-                // changess = true;
-                revertBalls(ball);
-                // System.out.println(record);
-                // System.out.println(caretaker.getMemento(ball).getState());
-                // ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
-                // ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
-                // System.out.println(caretaker.getMemento(ball).getState());
+                if(!changes){
+                    if(caretaker.getMemento(ball).getState().size()>1){
+                        changes = true;
+                        ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
+                        ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
+                        record--;
+                    }
+                } else {
+                    System.out.println("You've already undone");
+                    changes = false;
+                }
             }
-            // if(!changes){
-            //     System.out.println("No movement has been made");
-            // }
+            if(record == 0){
+                System.out.println("No movement has been made");
+            }
         });
         pane.getChildren().add(text);
         timer = new Timer(pane);
         for(Ball ball: balls){
             BallRecord ballRec = new BallRecord(ball);
-            ballRec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
+            ballRec.addRecord(record,new Point2D(ball.getxPos()-Config.getTableBuffer(), ball.getyPos()-Config.getTableBuffer()));
             records.put(ball,ballRec);
             Memento memento = new Memento(ballRec.getRecord());
             caretaker.addMemento(ball, memento);
@@ -180,19 +184,19 @@ public class GameManager {
             moving = false;
             record++;
             for(Ball ball: balls){
-                BallRecord ballRec = new BallRecord(ball);
-                ballRec.addRecord(record,new Point2D(ball.getxPos(), ball.getyPos()));
+                //update records
+                BallRecord ballRec = records.get(ball);
+                if(record > 1){ballRec.getRecord().remove(record-2);}
+                System.out.println("+"+ (ball.getxPos()- Config.getTableBuffer()));
+
+                // ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
+                ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
                 records.put(ball,ballRec);
+                //update caretaker
                 Memento memento = caretaker.getMemento(ball);
-                memento.getState().put(record,new Point2D(ball.getxPos(), ball.getyPos()));
-                caretaker.addMemento(ball, memento);
+                memento.getState().put(record,ballRec.getRecord().get(record));
+                // caretaker.addMemento(ball, memento);
             }
-            //need to get records to add data everytime the ball moves
-            //check to see if int 1,2,3... exists within ballrecord
-            for (BallRecord value : records.values()) {
-                System.out.println(value.getRecord());
-            }
-            
         }
 
         // Win
