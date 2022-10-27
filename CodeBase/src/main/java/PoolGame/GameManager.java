@@ -47,6 +47,7 @@ public class GameManager {
     private BallCareTaker caretaker = new BallCareTaker();
     private Timer timer;
     private boolean reset_flag = false;
+    private Button undo = new Button("Undo");
     private boolean doneUndo = false;
     private String savedTime = "Time: 00 : 00";
     private int savedScore = 0;
@@ -57,15 +58,6 @@ public class GameManager {
 
     private Scene scene;
     private GraphicsContext gc;
-
-    //adds prev data to caretaker
-    public void revertBalls(Ball ball,int currentRecord) {
-        BallRecord ballRecord = records.get(ball);   
-        //prev data
-        records.put(ball,ballRecord);
-        BallMemento memento = ballRecord.revert(2,currentRecord);
-        caretaker.addMemento(ball, memento);
-    }
 
     /**
      * Initialises timeline and cycle count.
@@ -96,28 +88,13 @@ public class GameManager {
         Canvas canvas = new Canvas(table.getxLength() + TABLEBUFFER * 2, table.getyLength() + TABLEBUFFER * 2);
         gc = canvas.getGraphicsContext2D();
         pane.getChildren().add(canvas);
-        Button undo = new Button("Undo");
+        undo.setLayoutX(table.getxLength() - Config.getTableBuffer() * 2 - Config.getTableBuffer()/3);
+        undo.setLayoutY(0);
         pane.getChildren().add(undo);
-        undo.setOnAction(e ->{
-            for(Ball ball: balls){
-                if(!doneUndo){
-                    if(caretaker.getMemento(ball).getState().size()>1){
-                        timer.setTime(savedTime);
-                        score = savedScore;
-                        doneUndo = true;
-                        revertBalls(ball, record);
-                        ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
-                        ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
-                        record--;
-                    }
-                }
-            }    
-            if(doneUndo){
-                System.out.println("You've already undone");
-            }        
-        });
         pane.getChildren().add(text);
+        //initiaize timer
         timer = new Timer(pane);
+        //initiaize data for record and caretaker
         for(Ball ball: balls){
             BallRecord ballRec = new BallRecord(ball);
             ballRec.addRecord(record,new Point2D(ball.getxPos()-Config.getTableBuffer(), ball.getyPos()-Config.getTableBuffer()));
@@ -189,13 +166,14 @@ public class GameManager {
             for(Ball ball: balls){
                 //update records
                 BallRecord ballRec = records.get(ball);
-                // if(record > 1){ballRec.getRecord().remove(record-2);}
                 ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
                 records.put(ball,ballRec);
                 //update caretaker
                 BallMemento memento = caretaker.getMemento(ball);
                 memento.getState().put(record,ballRec.getRecord().get(record));
+                // System.out.println((ball.getxPos()-Config.getTableBuffer()) + ","+(ball.getyPos()-Config.getTableBuffer()));
             }
+            // System.out.println("++++++++++++++++");
             doneUndo = false;
         }
 
@@ -295,6 +273,15 @@ public class GameManager {
                 }
             }
         }
+    }
+
+    //adds prev data to caretaker
+    public void revertBalls(Ball ball,int currentRecord) {
+        BallRecord ballRecord = records.get(ball);   
+        //prev data
+        records.put(ball,ballRecord);
+        BallMemento memento = ballRecord.revert(2,currentRecord);
+        caretaker.addMemento(ball, memento);
     }
 
     /**
@@ -413,6 +400,27 @@ public class GameManager {
             moving = true;
             savedTime = timer.getTime();
             savedScore = score;
+        });
+
+        undo.setOnAction(e ->{
+            if(!doneUndo){
+                for(Ball ball: balls){
+                    if(caretaker.getMemento(ball).getState().size()>1){
+                        timer.setTime(savedTime);
+                        score = savedScore;
+                        doneUndo = true;
+                        revertBalls(ball, record);
+                        // ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
+                        // ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
+                        // System.out.println(ball.getColour());
+                        System.out.println(caretaker.getMemento(ball).getState());
+                        System.out.println(caretaker.getMemento(ball).getState());
+                        record--;
+                    }
+                }
+            } else {
+                System.out.println("You've already undone");
+            }        
         });
     }
 

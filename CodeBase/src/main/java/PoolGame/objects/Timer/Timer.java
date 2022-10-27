@@ -44,7 +44,5 @@ public class Timer {
 
     public void setTime(String savedTime){
         timer.setText(savedTime);
-        System.out.println(savedTime);
-        System.out.println(timer.getText());
     }
 }
