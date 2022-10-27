@@ -3,8 +3,8 @@ package PoolGame;
 import PoolGame.objects.*;
 import PoolGame.objects.Timer.Timer;
 import PoolGame.undo.BallRecord;
-import PoolGame.undo.CareTaker;
-import PoolGame.undo.Memento;
+import PoolGame.undo.BallCareTaker;
+import PoolGame.undo.BallMemento;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,11 +43,13 @@ public class GameManager {
     private int score = 0;
     private boolean moving = false;
     private int record = 0;
-    private Map<Ball, BallRecord> records = new HashMap<>(); //memento
-    private CareTaker caretaker = new CareTaker();
+    private Map<Ball, BallRecord> records = new HashMap<>();
+    private BallCareTaker caretaker = new BallCareTaker();
     private Timer timer;
     private boolean reset_flag = false;
     private boolean doneUndo = false;
+    private String savedTime = "Time: 00 : 00";
+    private int savedScore = 0;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -61,7 +63,7 @@ public class GameManager {
         BallRecord ballRecord = records.get(ball);   
         //prev data
         records.put(ball,ballRecord);
-        Memento memento = ballRecord.revert(2,currentRecord);
+        BallMemento memento = ballRecord.revert(2,currentRecord);
         caretaker.addMemento(ball, memento);
     }
 
@@ -100,16 +102,19 @@ public class GameManager {
             for(Ball ball: balls){
                 if(!doneUndo){
                     if(caretaker.getMemento(ball).getState().size()>1){
+                        timer.setTime(savedTime);
+                        score = savedScore;
                         doneUndo = true;
                         revertBalls(ball, record);
                         ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
                         ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
                         record--;
                     }
-                } else {
-                    System.out.println("You've already undone");
                 }
-            }            
+            }    
+            if(doneUndo){
+                System.out.println("You've already undone");
+            }        
         });
         pane.getChildren().add(text);
         timer = new Timer(pane);
@@ -117,7 +122,7 @@ public class GameManager {
             BallRecord ballRec = new BallRecord(ball);
             ballRec.addRecord(record,new Point2D(ball.getxPos()-Config.getTableBuffer(), ball.getyPos()-Config.getTableBuffer()));
             records.put(ball,ballRec);
-            Memento memento = new Memento(ballRec.getRecord());
+            BallMemento memento = new BallMemento(ballRec.getRecord());
             caretaker.addMemento(ball, memento);
         }
     }
@@ -188,10 +193,10 @@ public class GameManager {
                 ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
                 records.put(ball,ballRec);
                 //update caretaker
-                Memento memento = caretaker.getMemento(ball);
+                BallMemento memento = caretaker.getMemento(ball);
                 memento.getState().put(record,ballRec.getRecord().get(record));
-                doneUndo = false;
             }
+            doneUndo = false;
         }
 
         // Win
@@ -406,6 +411,8 @@ public class GameManager {
             cueSet = true;
             cueActive = false;
             moving = true;
+            savedTime = timer.getTime();
+            savedScore = score;
         });
     }
 

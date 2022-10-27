@@ -37,4 +37,14 @@ public class Timer {
             count.setSec(0);
         }
     } 
+
+    public String getTime(){
+        return timer.getText();
+    }
+
+    public void setTime(String savedTime){
+        timer.setText(savedTime);
+        System.out.println(savedTime);
+        System.out.println(timer.getText());
+    }
 }

@@ -34,12 +34,12 @@ public class BallRecord {
 
     //Create new Memento object of current ball record
     //revert UOS to a previous state 
-    public Memento revert(int numOfRecords, int currentRecord) {
+    public BallMemento revert(int numOfRecords, int currentRecord) {
         //1. generate Deep copy of current record
         Map<Integer, Point2D> copyRecords = copyRecords();
         //reset ball
         copyRecords.remove(currentRecord-2);
         //2. Save the current state inside a memento
-        return new Memento(copyRecords);
+        return new BallMemento(copyRecords);
     }
 }
