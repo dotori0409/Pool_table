@@ -7,12 +7,12 @@ import PoolGame.objects.Ball;
 import javafx.geometry.Point2D;
 
 public class BallRecord {
-    private Map<Integer, Point2D> records; 
+    private Map<Integer, Point2D> records= new HashMap<>(); 
     private Ball ball;
 
     public BallRecord(Ball ball) {
         this.ball = ball;
-        this.records = new HashMap<>(); 
+        // this.records = new HashMap<>(); 
     }
 
     public void addRecord(int key, Point2D record) {
@@ -34,23 +34,12 @@ public class BallRecord {
 
     //Create new Memento object of current ball record
     //revert UOS to a previous state 
-    public Memento revert(int currentRecord) {
+    public Memento revert(int numOfRecords, int currentRecord) {
         //1. generate Deep copy of current record
         Map<Integer, Point2D> copyRecords = copyRecords();
-
-        //reset (has nothing to do with Memento)
-        if(currentRecord>0){
-            records.remove(copyRecords);
-        }
-        
-
+        //reset ball
+        copyRecords.remove(currentRecord-2);
         //2. Save the current state inside a memento
         return new Memento(copyRecords);
     }
-
-    public void restore(Memento memento) {
-        Map<Integer, Point2D> state = memento.getState();
-        this.records = state;
-    }
-
 }

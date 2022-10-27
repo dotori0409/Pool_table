@@ -47,7 +47,7 @@ public class GameManager {
     private CareTaker caretaker = new CareTaker();
     private Timer timer;
     private boolean reset_flag = false;
-    private boolean changes = false;
+    private boolean doneUndo = false;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -60,7 +60,8 @@ public class GameManager {
     public void revertBalls(Ball ball,int currentRecord) {
         BallRecord ballRecord = records.get(ball);   
         //prev data
-        Memento memento = ballRecord.revert(currentRecord);
+        records.put(ball,ballRecord);
+        Memento memento = ballRecord.revert(2,currentRecord);
         caretaker.addMemento(ball, memento);
     }
 
@@ -97,21 +98,18 @@ public class GameManager {
         pane.getChildren().add(undo);
         undo.setOnAction(e ->{
             for(Ball ball: balls){
-                if(!changes){
+                if(!doneUndo){
                     if(caretaker.getMemento(ball).getState().size()>1){
-                        changes = true;
+                        doneUndo = true;
+                        revertBalls(ball, record);
                         ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
                         ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
                         record--;
                     }
                 } else {
                     System.out.println("You've already undone");
-                    changes = false;
                 }
-            }
-            if(record == 0){
-                System.out.println("No movement has been made");
-            }
+            }            
         });
         pane.getChildren().add(text);
         timer = new Timer(pane);
@@ -186,16 +184,13 @@ public class GameManager {
             for(Ball ball: balls){
                 //update records
                 BallRecord ballRec = records.get(ball);
-                if(record > 1){ballRec.getRecord().remove(record-2);}
-                System.out.println("+"+ (ball.getxPos()- Config.getTableBuffer()));
-
-                // ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
+                // if(record > 1){ballRec.getRecord().remove(record-2);}
                 ballRec.addRecord(record,new Point2D(ball.getxPos()- Config.getTableBuffer(), ball.getyPos()- Config.getTableBuffer()));
                 records.put(ball,ballRec);
                 //update caretaker
                 Memento memento = caretaker.getMemento(ball);
                 memento.getState().put(record,ballRec.getRecord().get(record));
-                // caretaker.addMemento(ball, memento);
+                doneUndo = false;
             }
         }
 
