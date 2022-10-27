@@ -38,7 +38,7 @@ public class BallRecord {
         //1. generate Deep copy of current record
         Map<Integer, Point2D> copyRecords = copyRecords();
         //reset ball
-        copyRecords.remove(currentRecord-2);
+        if(numOfRecords>2)copyRecords.remove(currentRecord-2);
         //2. Save the current state inside a memento
         return new BallMemento(copyRecords);
     }
