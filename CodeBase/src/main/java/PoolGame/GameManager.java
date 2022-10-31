@@ -2,9 +2,10 @@ package PoolGame;
 
 import PoolGame.objects.*;
 import PoolGame.objects.Timer.Timer;
-import PoolGame.undo.BallRecord;
-import PoolGame.undo.BallCareTaker;
-import PoolGame.undo.BallMemento;
+import PoolGame.strategy.Cheat;
+import PoolGame.strategy.undo.BallCareTaker;
+import PoolGame.strategy.undo.BallMemento;
+import PoolGame.strategy.undo.BallRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,8 +41,11 @@ public class GameManager {
     private boolean cueSet = false;
     private boolean cueActive = false;
     private boolean winFlag = false;
+
     private Text text = new Text();
-    private int score = 0;
+    private Score scoreKeeper = new Score();
+    private int savedScore = 0;
+
     private boolean moving = false;
     private int record = 0;
     private Map<Ball, BallRecord> records = new HashMap<>();
@@ -50,7 +55,7 @@ public class GameManager {
     private Button undo = new Button("Undo");
     private boolean doneUndo = false;
     private String savedTime = "Time: 00 : 00";
-    private int savedScore = 0;
+    private Ball cueBall;
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -58,6 +63,7 @@ public class GameManager {
 
     private Scene scene;
     private GraphicsContext gc;
+
 
     /**
      * Initialises timeline and cycle count.
@@ -102,6 +108,13 @@ public class GameManager {
             BallMemento memento = new BallMemento(ballRec.getRecord());
             caretaker.addMemento(ball, memento);
         }
+        if(cueBall == null) cueBall = balls.get(0);
+        for(Ball b: balls){
+            if(b.isCue()){
+                cueBall = b;
+            }
+        }
+        Cheat cheat = new Cheat(balls, scoreKeeper, table, pane);
     }
 
     /**
@@ -140,6 +153,8 @@ public class GameManager {
         // Cue
         if (this.cue != null && cueActive) {
             gc.strokeLine(cue.getStartX(), cue.getStartY(), cue.getEndX(), cue.getEndY());
+            gc.setStroke(Color.BROWN);
+            gc.setLineWidth(10);
         }
         
         for (Ball ball : balls) {
@@ -189,13 +204,13 @@ public class GameManager {
      * Used Exercise 6 as reference.
      */
     public void tick() {
-        String scoreText = "Score: "+ Integer.toString(score);
+        String scoreText = "Score: "+ Integer.toString(scoreKeeper.getScore());
         text.setText(scoreText);
         text.setX(table.getxLength()/2);
         text.setY(20);
         text.setFont(Font.font(null, FontWeight.BOLD, 20));
 
-        if (score == balls.size() - 1) {
+        if (scoreKeeper.getScore() == balls.size() - 1) {
             winFlag = true;
         }
 
@@ -217,7 +232,7 @@ public class GameManager {
                         reset_flag = true;
                     } else {
                         if (ball.remove()) {
-                            score+= ball.getScore(ball.getColour());
+                            scoreKeeper.addScore(ball.getScore(ball.getColour()));
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -290,7 +305,7 @@ public class GameManager {
             ball.reset();
         }
 
-        this.score = 0;
+        scoreKeeper.reset();;
     }
 
     /**
@@ -354,9 +369,7 @@ public class GameManager {
             ball.setxVel(hitxVel);
             ball.setyVel(hityVel);
         }
-
         cueSet = false;
-
     }
 
     /**
@@ -374,6 +387,7 @@ public class GameManager {
             ballB.setyVel(changes.getValue().getY());
         }
     }
+    
 
     /**
      * Sets the cue to be drawn on click, and manages cue actions
@@ -388,6 +402,8 @@ public class GameManager {
         });
 
         pane.setOnMouseDragged(event -> {
+            cue.setStartX(cueBall.getxPos());
+            cue.setStartY(cueBall.getyPos());
             cue.setEndX(event.getX());
             cue.setEndY(event.getY());
         });
@@ -397,7 +413,7 @@ public class GameManager {
             cueActive = false;
             moving = true;
             savedTime = timer.getTime();
-            savedScore = score;
+            savedScore = scoreKeeper.getScore();
         });
 
         undo.setOnAction(e ->{
@@ -405,7 +421,8 @@ public class GameManager {
                 for(Ball ball: balls){
                     if(caretaker.getMemento(ball).getState().size()>1){
                         timer.setTime(savedTime);
-                        score = savedScore;
+                        scoreKeeper.setScore(savedScore);
+                        // score = savedScore;
                         doneUndo = true;
                         revertBalls(ball, record);
                         ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());

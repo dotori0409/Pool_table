@@ -1,4 +1,4 @@
-package PoolGame.undo;
+package PoolGame.strategy.undo;
 
 import java.util.HashMap;
 import java.util.Map;

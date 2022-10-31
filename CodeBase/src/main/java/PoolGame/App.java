@@ -55,7 +55,6 @@ public class App extends Application {
         gameManager.run();
 
         Button buttonEasy = new Button("Easy");
-        buttonEasy.setWrapText(true);
         buttonEasy.setLayoutX(gameManager.getTable().getxLength() - Config.getTableBuffer() - Config.getTableBuffer()/4);
         buttonEasy.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonEasy);
@@ -68,7 +67,6 @@ public class App extends Application {
         });
 
         Button buttonNormal = new Button("Normal");
-        buttonNormal.setWrapText(true);
         buttonNormal.setLayoutX(gameManager.getTable().getxLength() - Config.getTableBuffer()/4);
         buttonNormal.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonNormal);
@@ -81,7 +79,6 @@ public class App extends Application {
         });
 
         Button buttonHard = new Button("Hard");
-        buttonHard.setWrapText(true);
         buttonHard.setLayoutX(gameManager.getTable().getxLength() + Config.getTableBuffer());
         buttonHard.setLayoutY(0);
         gameManager.getPane().getChildren().add(buttonHard);
