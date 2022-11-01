@@ -36,6 +36,7 @@ public class GameManager {
     private Table table;
     private ArrayList<Ball> balls = new ArrayList<Ball>();
     ArrayList<Pocket> pockets = new ArrayList<Pocket>();
+    private Ball cueBall;
     private Line cue;
     private Pane pane;
     private boolean cueSet = false;
@@ -53,14 +54,12 @@ public class GameManager {
     private BallCareTaker caretaker = new BallCareTaker();
 
     private Timer timer;
-    private String savedTime = "Time: 00 : 00";
+    private String savedTimeDisplay = "Time: 00 : 00";
     
     private boolean reset_flag = false;
     private Button undo = new Button("Undo");
     private boolean doneUndo = false;
    
-    private Ball cueBall;
-    
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
     private final double FORCEFACTOR = 0.1;
@@ -166,6 +165,9 @@ public class GameManager {
             gc.setLineWidth(10);
         }
         
+        
+        //Check if moving is over
+        boolean moving_flag = false;
         for (Ball ball : balls) {
             if (ball.isActive()) {
                 gc.setFill(ball.getColour());
@@ -174,15 +176,11 @@ public class GameManager {
                         ball.getRadius() * 2,
                         ball.getRadius() * 2);
             }
-        }
-
-        //Check if moving is over
-        boolean moving_flag = false;
-        for(Ball ball: balls){
             if(moving && (Math.abs(ball.getxVel()) > 0.01 || Math.abs(ball.getyVel()) > 0.01)){
                 moving_flag = true;
             }
         }
+
         //Add info to memento if all balls are at a stop
         if((moving && moving_flag == false)){
             moving = false;
@@ -406,7 +404,7 @@ public class GameManager {
      */
     private void setClickEvents(Pane pane) {
         pane.setOnMousePressed(event -> {
-            cue = CueStickSingleton.getInstance(event);
+            cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
             cueSet = false;
             cueActive = true;
         });
@@ -422,7 +420,7 @@ public class GameManager {
             cueSet = true;
             cueActive = false;
             moving = true;
-            savedTime = timer.getTime();
+            savedTimeDisplay = timer.getTime();
             savedScore = scoreKeeper.getScore();
         });
 
@@ -430,7 +428,7 @@ public class GameManager {
             if(!doneUndo){
                 for(Ball ball: balls){
                     if(caretaker.getMemento(ball).getState().size()>1){
-                        timer.setTime(savedTime);
+                        timer.setTime(savedTimeDisplay);
                         scoreKeeper.setScore(savedScore);
                         // score = savedScore;
                         doneUndo = true;
