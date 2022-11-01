@@ -43,6 +43,7 @@ public class GameManager {
     private boolean winFlag = false;
 
     private Text text = new Text();
+    private int totalScore = 0;
     private Score scoreKeeper = new Score();
     private int savedScore = 0;
 
@@ -50,15 +51,16 @@ public class GameManager {
     private int record = 0;
     private Map<Ball, BallRecord> records = new HashMap<>();
     private BallCareTaker caretaker = new BallCareTaker();
+
     private Timer timer;
+    private String savedTime = "Time: 00 : 00";
+    
     private boolean reset_flag = false;
     private Button undo = new Button("Undo");
     private boolean doneUndo = false;
-    private String savedTime = "Time: 00 : 00";
+   
     private Ball cueBall;
-    int totalScore = 0;
-
-
+    
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
     private final double FORCEFACTOR = 0.1;
@@ -109,6 +111,12 @@ public class GameManager {
             records.put(ball,ballRec);
             BallMemento memento = new BallMemento(ballRec.getRecord());
             caretaker.addMemento(ball, memento);
+        }
+        //find cueBall
+        for(Ball ball: balls){
+            if(ball.isCue()){
+                cueBall = ball;
+            }
         }
         //initialize cheat
         Cheat cheat = new Cheat(balls, scoreKeeper, table, pane);
@@ -398,7 +406,7 @@ public class GameManager {
      */
     private void setClickEvents(Pane pane) {
         pane.setOnMousePressed(event -> {
-            cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+            cue = CueStickSingleton.getInstance(event);
             cueSet = false;
             cueActive = true;
         });

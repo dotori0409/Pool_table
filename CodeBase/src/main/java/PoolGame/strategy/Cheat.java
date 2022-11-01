@@ -34,8 +34,7 @@ public class Cheat {
             setText(ballColor.get());
             if(ballColor.get()+1 > 7){
                 ballColor.set(0);
-            }
-            else{
+            } else{
                 ballColor.set(ballColor.get()+1);
             }
             
@@ -104,7 +103,7 @@ public class Cheat {
             cheatButton.setText("Cheat : Blue");
         }
    }
-   
+
    public void task(Paint colour, List<Ball> balls) {
         List<Ball> toRemove = new ArrayList<>();
         for (Ball ball : balls) {
