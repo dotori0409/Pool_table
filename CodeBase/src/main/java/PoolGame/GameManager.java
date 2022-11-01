@@ -404,7 +404,12 @@ public class GameManager {
      * 
      * @param pane
      */
+    double saveXStart = 0;
+    double saveYStart = 0;
+    double saveXEnd = 0;
+    double saveYEnd = 0;
     private void setClickEvents(Pane pane) {
+        
         pane.setOnMousePressed(event -> {
             cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
             cueSet = false;
@@ -412,6 +417,10 @@ public class GameManager {
         });
 
         pane.setOnMouseDragged(event -> {
+            saveXStart = cueBall.getxPos();
+            saveYStart = cueBall.getyPos();
+            saveXEnd = event.getX();
+            saveYEnd = event.getY();
             cue.setStartX(cueBall.getxPos());
             cue.setStartY(cueBall.getyPos());
             cue.setEndX(event.getX());
@@ -419,8 +428,12 @@ public class GameManager {
         });
 
         pane.setOnMouseReleased(event -> {
+            cue.setStartX(saveXStart);
+            cue.setStartY(saveYStart);
+            cue.setEndX(saveXEnd);
+            cue.setEndY(saveYEnd);
             cueSet = true;
-            cueActive = false;
+            cueActive = true;
             moving = true;
             savedTimeDisplay = timer.getTime();
             savedScore = scoreKeeper.getScore();

@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.paint.Paint;
 
 public class Cheat {
-    private final int LOCATIONBUFFER = 70;
     private Score scoreKeeper;
     private Button cheatButton;
     private Button cheatNextButton;
@@ -20,11 +19,11 @@ public class Cheat {
         this.scoreKeeper = scoreKeeper;
         cheatButton = new Button("Cheat : Blue");
         cheatButton.setLayoutX(10);
-        cheatButton.setLayoutY(table.getyLength()+LOCATIONBUFFER);
+        cheatButton.setLayoutY(table.getyLength()+70);
 
         cheatNextButton = new Button("Next Cheat");
-        cheatNextButton.setLayoutX(2*LOCATIONBUFFER-35);
-        cheatNextButton.setLayoutY(table.getyLength()+LOCATIONBUFFER);
+        cheatNextButton.setLayoutX(110);
+        cheatNextButton.setLayoutY(table.getyLength()+70);
 
         AtomicInteger ballColor = new AtomicInteger(0);
         cheatNextButton.setOnAction(event -> {
@@ -39,42 +38,42 @@ public class Cheat {
 
         cheatButton.setOnAction(event -> {
             if (ballColor.get() == 0) {
-                cheatEvent(Paint.valueOf("blue"), balls);
+                doCheat(Paint.valueOf("blue"), balls);
                 setText(ballColor.get());
                 ballColor.set(1);
 
             } else if (ballColor.get() == 1) {
-                cheatEvent(Paint.valueOf("red"), balls);
+                doCheat(Paint.valueOf("red"), balls);
                 setText(ballColor.get());
                 ballColor.set(2);
 
             } else if (ballColor.get() == 2) {
-                cheatEvent(Paint.valueOf("yellow"), balls);
+                doCheat(Paint.valueOf("yellow"), balls);
                 setText(ballColor.get());
                 ballColor.set(3);
 
             } else if (ballColor.get() == 3) {
-                cheatEvent(Paint.valueOf("green"), balls);
+                doCheat(Paint.valueOf("green"), balls);
                 setText(ballColor.get());
                 ballColor.set(4);
 
             } else if (ballColor.get() == 4) {
-                cheatEvent(Paint.valueOf("brown"), balls);
+                doCheat(Paint.valueOf("brown"), balls);
                 setText(ballColor.get());
                 ballColor.set(5);
 
             } else if (ballColor.get() == 5) {
-                cheatEvent(Paint.valueOf("purple"), balls);
+                doCheat(Paint.valueOf("purple"), balls);
                 setText(ballColor.get());
                 ballColor.set(6);
 
             } else if (ballColor.get() == 6) {
-                cheatEvent(Paint.valueOf("orange"), balls);
+                doCheat(Paint.valueOf("orange"), balls);
                 setText(ballColor.get());
                 ballColor.set(7);
 
             } else if (ballColor.get() == 7) {
-                cheatEvent(Paint.valueOf("black"), balls);
+                doCheat(Paint.valueOf("black"), balls);
                 setText(ballColor.get());
                 ballColor.set(0);
             }
@@ -101,7 +100,7 @@ public class Cheat {
         }
    }
 
-   public void cheatEvent(Paint colour, List<Ball> balls) {
+   public void doCheat(Paint colour, List<Ball> balls) {
         List<Ball> toRemove = new ArrayList<>();
         for (Ball ball : balls) {
             if (ball.getColour() == colour) {
