@@ -118,7 +118,9 @@ public class GameManager {
             }
         }
         //initialize cheat
-        Cheat cheat = new Cheat(balls, scoreKeeper, table, pane);
+        Cheat cheat = new Cheat(balls, scoreKeeper, table);
+        pane.getChildren().add(cheat.getCheatButton());
+        pane.getChildren().add(cheat.getNextButton());
         //calculate total score
         for(Ball ball: balls){
             totalScore += ball.getScore(ball.getColour());
