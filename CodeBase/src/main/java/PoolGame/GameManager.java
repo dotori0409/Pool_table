@@ -56,6 +56,8 @@ public class GameManager {
     private boolean doneUndo = false;
     private String savedTime = "Time: 00 : 00";
     private Ball cueBall;
+    int totalScore = 0;
+
 
     private final double TABLEBUFFER = Config.getTableBuffer();
     private final double TABLEEDGE = Config.getTableEdge();
@@ -108,13 +110,12 @@ public class GameManager {
             BallMemento memento = new BallMemento(ballRec.getRecord());
             caretaker.addMemento(ball, memento);
         }
-        if(cueBall == null) cueBall = balls.get(0);
-        for(Ball b: balls){
-            if(b.isCue()){
-                cueBall = b;
-            }
-        }
+        //initialize cheat
         Cheat cheat = new Cheat(balls, scoreKeeper, table, pane);
+        //calculate total score
+        for(Ball ball: balls){
+            totalScore += ball.getScore(ball.getColour());
+        }
     }
 
     /**
@@ -210,7 +211,8 @@ public class GameManager {
         text.setY(20);
         text.setFont(Font.font(null, FontWeight.BOLD, 20));
 
-        if (scoreKeeper.getScore() == balls.size() - 1) {
+        
+        if (scoreKeeper.getScore() == totalScore) {
             winFlag = true;
         }
 

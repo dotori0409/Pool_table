@@ -228,7 +228,9 @@ public class Ball {
     }
 
     public int getScore(Paint colour){
-        if(colour ==  Paint.valueOf("red")){
+        if(colour == Paint.valueOf("white")){
+            return 0;
+        }else if(colour ==  Paint.valueOf("red")){
             return 1;
         }else if(colour == Paint.valueOf("yellow")){
             return 2;
