@@ -25,7 +25,7 @@ public class Timer {
     }
 
     public void time() throws InterruptedException{
-        timer.setText("Time: "+ String.format("%02d", count.getMin())+" : "+String.format("%02d", count.getSec())); 
+        timer.setText("Time "+ String.format("%02d", count.getMin())+" : "+String.format("%02d", count.getSec())); 
         Thread.sleep(1);
         count.setMSec(count.getMSec()+1);
         if (count.getMSec()==100){
@@ -44,5 +44,7 @@ public class Timer {
 
     public void setTime(String savedTime){
         timer.setText(savedTime);
+        count.setMin(Integer.parseInt(savedTime.split(":")[0].split(" ")[1]));
+        count.setSec(Integer.parseInt(savedTime.split(": ")[1]));
     }
 }

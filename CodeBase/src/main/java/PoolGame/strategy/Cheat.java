@@ -7,15 +7,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 import PoolGame.objects.Ball;
 import PoolGame.objects.Score;
 import PoolGame.objects.Table;
+import PoolGame.objects.Timer.Timer;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Paint;
 
 public class Cheat {
     private Score scoreKeeper;
+    private Timer timer;
     private Button cheatButton;
     private Button cheatNextButton;
+    private int savedScore;
+    private boolean doneCheat;
+    private String savedTimeDisplay;
     
-   public Cheat(List<Ball> balls, Score scoreKeeper,Table table){
+   public Cheat(List<Ball> balls, Timer timer, Score scoreKeeper,Table table){
+        doneCheat = false;
+        savedScore = 0;
+        this.timer = timer;
         this.scoreKeeper = scoreKeeper;
         cheatButton = new Button("Cheat : Blue");
         cheatButton.setLayoutX(10);
@@ -41,21 +49,25 @@ public class Cheat {
                 doCheat(Paint.valueOf("blue"), balls);
                 setText(ballColor.get());
                 ballColor.set(1);
+                doneCheat = true;
 
             } else if (ballColor.get() == 1) {
                 doCheat(Paint.valueOf("red"), balls);
                 setText(ballColor.get());
                 ballColor.set(2);
+                doneCheat = true;
 
             } else if (ballColor.get() == 2) {
                 doCheat(Paint.valueOf("yellow"), balls);
                 setText(ballColor.get());
                 ballColor.set(3);
+                doneCheat = true;
 
             } else if (ballColor.get() == 3) {
                 doCheat(Paint.valueOf("green"), balls);
                 setText(ballColor.get());
                 ballColor.set(4);
+                doneCheat = true;
 
             } else if (ballColor.get() == 4) {
                 doCheat(Paint.valueOf("brown"), balls);
@@ -66,16 +78,19 @@ public class Cheat {
                 doCheat(Paint.valueOf("purple"), balls);
                 setText(ballColor.get());
                 ballColor.set(6);
+                doneCheat = true;
 
             } else if (ballColor.get() == 6) {
                 doCheat(Paint.valueOf("orange"), balls);
                 setText(ballColor.get());
                 ballColor.set(7);
+                doneCheat = true;
 
             } else if (ballColor.get() == 7) {
                 doCheat(Paint.valueOf("black"), balls);
                 setText(ballColor.get());
                 ballColor.set(0);
+                doneCheat = true;
             }
         });
    }
@@ -101,6 +116,8 @@ public class Cheat {
    }
 
    public void doCheat(Paint colour, List<Ball> balls) {
+        savedScore = scoreKeeper.getScore();
+        savedTimeDisplay = timer.getTime();
         List<Ball> toRemove = new ArrayList<>();
         for (Ball ball : balls) {
             if (ball.getColour() == colour) {
@@ -113,6 +130,22 @@ public class Cheat {
 
     public Button getCheatButton(){
         return cheatButton;
+    }
+
+    public boolean getDoneCheat(){
+        return doneCheat;
+    }
+
+    public void setDoneCheatFalse(){
+        this.doneCheat = false;
+    }
+
+    public int getSavedScore(){
+        return savedScore;
+    }
+
+    public String getSavedTime(){
+        return savedTimeDisplay;
     }
 
     public Button getNextButton(){
