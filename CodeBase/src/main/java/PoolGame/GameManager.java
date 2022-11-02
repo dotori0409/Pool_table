@@ -1,5 +1,7 @@
 package PoolGame;
 
+import PoolGame.Observer.ScoreUpdater;
+import PoolGame.Observer.Updater;
 import PoolGame.objects.*;
 import PoolGame.objects.Timer.Timer;
 import PoolGame.strategy.Cheat;
@@ -67,6 +69,8 @@ public class GameManager {
     private final double FORCEFACTOR = 0.1;
 
     private Cheat cheat;
+
+    private Updater updater = new ScoreUpdater(scoreKeeper);
 
     private Scene scene;
     private GraphicsContext gc;
@@ -248,7 +252,7 @@ public class GameManager {
                         reset_flag = true;
                     } else {
                         if (ball.remove()) {
-                            scoreKeeper.addScore(ball.getScore(ball.getColour()));
+                            updater.update(ball.getScore(ball.getColour())+scoreKeeper.getScore());
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -454,7 +458,7 @@ public class GameManager {
             if(!doneUndo){
                 if(cheat.getDoneCheat()){
                     timer.setTime(cheat.getSavedTime());
-                    scoreKeeper.setScore(cheat.getSavedScore());
+                    updater.update(cheat.getSavedScore());
                     cheat.setDoneCheatFalse();
                     balls = new ArrayList<>(savedBalls);
                 } else {
@@ -464,7 +468,7 @@ public class GameManager {
                     for(Ball ball: balls){
                         if(caretaker.getMemento(ball).getState().size()>1){
                             timer.setTime(savedTimeDisplay);
-                            scoreKeeper.setScore(savedScore);
+                            updater.update(savedScore);
                             doneUndo = true;
                             revertBalls(ball, record);
                             ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());

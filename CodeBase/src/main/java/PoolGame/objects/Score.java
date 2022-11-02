@@ -1,7 +1,10 @@
 package PoolGame.objects;
 
+import PoolGame.Observer.Updater;
+
 public class Score {
-    int score;
+    private Updater scoreUpdate;
+    private int score;
 
     public Score(){
         score = 0;
@@ -11,15 +14,20 @@ public class Score {
         return score;
     }
 
-    public void addScore(int num){
-        this.score += num;
-    }
-
     public void setScore(int score){
         this.score = score;
     }
 
     public void reset(){
         this.score = 0;
+    }
+
+    public void attach(Updater scoreUpdate){
+        this.scoreUpdate = scoreUpdate;
+    }
+
+    public void notifyUpdater(){
+        score = getScore();
+        scoreUpdate.update(score);
     }
 }

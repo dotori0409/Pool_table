@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import PoolGame.Observer.ScoreUpdater;
+import PoolGame.Observer.Updater;
 import PoolGame.objects.Ball;
 import PoolGame.objects.Score;
 import PoolGame.objects.Table;
@@ -19,12 +21,14 @@ public class Cheat {
     private int savedScore;
     private boolean doneCheat;
     private String savedTimeDisplay;
+    private Updater updater;
     
    public Cheat(List<Ball> balls, Timer timer, Score scoreKeeper,Table table){
         doneCheat = false;
         savedScore = 0;
         this.timer = timer;
         this.scoreKeeper = scoreKeeper;
+        updater = new ScoreUpdater(scoreKeeper);
         cheatButton = new Button("Cheat : Blue");
         cheatButton.setLayoutX(10);
         cheatButton.setLayoutY(table.getyLength()+70);
@@ -119,10 +123,9 @@ public class Cheat {
         savedScore = scoreKeeper.getScore();
         savedTimeDisplay = timer.getTime();
         List<Ball> toRemove = new ArrayList<>();
-        System.out.println(balls.size());
         for (Ball ball : balls) {
             if (ball.getColour() == colour) {
-                scoreKeeper.addScore(ball.getScore(ball.getColour()));
+                updater.update(ball.getScore(ball.getColour())+scoreKeeper.getScore());
                 toRemove.add(ball);
             }
         }
