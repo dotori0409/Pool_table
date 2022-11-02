@@ -13,6 +13,10 @@ import PoolGame.objects.Table;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Paint;
 
+/**
+ * Removes the all the chosen colored-balls 
+ * from the table and increases the score accoring to it
+*/
 public class Cheat {
     private Score scoreKeeper;
     private Timer timer;
@@ -23,6 +27,13 @@ public class Cheat {
     private String savedTimeDisplay;
     private Updater updater;
     
+    /**
+     * Initialize variables and set action when pressing button
+     * @param balls
+     * @param timer
+     * @param scorekeeper
+     * @param table
+    */
    public Cheat(List<Ball> balls, Timer timer, Score scoreKeeper,Table table){
         doneCheat = false;
         savedScore = 0;
@@ -99,6 +110,10 @@ public class Cheat {
         });
    }
 
+   /**
+     * sets the text for the cheat button
+     * @param num
+    */
    public void setText(int num){
         if(num == 0){
             cheatButton.setText("Cheat : Red");
@@ -119,6 +134,11 @@ public class Cheat {
         }
    }
 
+   /**
+     * To the task of removing balls
+     * @param colour
+     * @param balls
+    */
    public void doCheat(Paint colour, List<Ball> balls) {
         savedScore = scoreKeeper.getScore();
         savedTimeDisplay = timer.getTime();

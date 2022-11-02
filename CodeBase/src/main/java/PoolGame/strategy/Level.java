@@ -6,6 +6,7 @@ import PoolGame.GameManager;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+/*** Creates the button for the difficulty level*/
 public class Level {
     GameManager gameManager;
     Stage primaryStage;
@@ -14,12 +15,18 @@ public class Level {
     Button buttonNormal;
     Button buttonHard;
 
+    /**
+     * Intializes variables
+     */
     public Level(GameManager gameManager, Stage primaryStage){
         app = new App();
         this.gameManager = gameManager;
         this.primaryStage = primaryStage;
     }
 
+    /**
+     * Create buttons from easy, normal, hard
+     */
     public void createLevelButtons(){
         buttonEasy = new Button("Easy");
         buttonEasy.setLayoutX(gameManager.getTable().getxLength() - Config.getTableBuffer() - Config.getTableBuffer()/4);
@@ -39,6 +46,9 @@ public class Level {
         buttonAction();
     }
 
+    /**
+     * Set button actions
+     */
     public void buttonAction(){
         buttonEasy.setOnAction(e ->{
             try {
@@ -65,14 +75,26 @@ public class Level {
         });
     }
 
+    /**
+     * Returns easy button variable
+     * @return buttonEasy
+     */
     public Button getEasyButton(){
         return buttonEasy;
     }
 
+    /**
+     * Returns normal button variable
+     * @return buttonNormal
+     */
     public Button getNormalButton(){
         return buttonNormal;
     }
 
+    /**
+     * Returns hard button variable
+     * @return buttonHard
+     */
     public Button getHardButton(){
         return buttonHard;
     }

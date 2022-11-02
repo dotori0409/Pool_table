@@ -28,6 +28,12 @@ public class App extends Application {
         newGame(primaryStage,"src/main/resources/config_easy.json");
     }
 
+    /**
+     * Restarts a new game with a specified game mode according to the config file
+     * 
+     * @param primaryStage The primary stage for the application.
+     * @param config The file name to read
+     */
     public void newGame(Stage primaryStage, String config) throws InterruptedException{
 
         GameManager gameManager = new GameManager();

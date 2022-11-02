@@ -75,6 +75,11 @@ public class GameManager {
     private Updater scoreUpdater = new ScoreUpdater(scoreKeeper);
     private Updater timeUpdater;
 
+    private double saveXStart = 0;
+    private double saveYStart = 0;
+    private double saveXEnd = 0;
+    private double saveYEnd = 0;
+
     private Scene scene;
     private GraphicsContext gc;
 
@@ -316,7 +321,12 @@ public class GameManager {
         }
     }
 
-    //adds prev data to caretaker
+    /**
+     * Adds prev data to caretaker
+     * 
+     * @param ball
+     * @param currentRecord
+     */
     public void revertBalls(Ball ball,int currentRecord) {
         BallRecord ballRecord = records.get(ball);   
         //prev data
@@ -422,14 +432,9 @@ public class GameManager {
      * 
      * @param pane
      */
-    double saveXStart = 0;
-    double saveYStart = 0;
-    double saveXEnd = 0;
-    double saveYEnd = 0;
     private void setClickEvents(Pane pane) {
         
         pane.setOnMousePressed(event -> {
-            // cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
             cue = CueStickSingleton.getInstance(event);
             cueSet = false;
             cueActive = true;
@@ -563,6 +568,10 @@ public class GameManager {
         return new Pair<>(velAPrime, velBPrime);
     }
 
+    /**
+     * Returns pane used in gamemanager
+     * @return pane,
+     */
     public Pane getPane(){
         return pane;
     }
