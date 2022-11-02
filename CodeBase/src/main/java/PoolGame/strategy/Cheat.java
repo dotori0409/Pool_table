@@ -125,7 +125,7 @@ public class Cheat {
         List<Ball> toRemove = new ArrayList<>();
         for (Ball ball : balls) {
             if (ball.getColour() == colour) {
-                updater.update(ball.getScore(ball.getColour())+scoreKeeper.getScore());
+                updater.update(String.valueOf(ball.getScore(ball.getColour())+scoreKeeper.getScore()));
                 toRemove.add(ball);
             }
         }

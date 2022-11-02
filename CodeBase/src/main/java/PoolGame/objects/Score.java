@@ -28,6 +28,6 @@ public class Score {
 
     public void notifyUpdater(){
         score = getScore();
-        scoreUpdate.update(score);
+        scoreUpdate.update(String.valueOf(score));
     }
 }

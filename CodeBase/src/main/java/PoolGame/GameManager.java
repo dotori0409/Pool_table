@@ -252,7 +252,7 @@ public class GameManager {
                         reset_flag = true;
                     } else {
                         if (ball.remove()) {
-                            updater.update(ball.getScore(ball.getColour())+scoreKeeper.getScore());
+                            updater.update(String.valueOf(ball.getScore(ball.getColour())+scoreKeeper.getScore()));
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -458,7 +458,7 @@ public class GameManager {
             if(!doneUndo){
                 if(cheat.getDoneCheat()){
                     timer.setTime(cheat.getSavedTime());
-                    updater.update(cheat.getSavedScore());
+                    updater.update(String.valueOf(cheat.getSavedScore()));
                     cheat.setDoneCheatFalse();
                     balls = new ArrayList<>(savedBalls);
                 } else {
@@ -468,7 +468,7 @@ public class GameManager {
                     for(Ball ball: balls){
                         if(caretaker.getMemento(ball).getState().size()>1){
                             timer.setTime(savedTimeDisplay);
-                            updater.update(savedScore);
+                            updater.update(String.valueOf(savedScore));
                             doneUndo = true;
                             revertBalls(ball, record);
                             ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());

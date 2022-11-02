@@ -10,8 +10,8 @@ public class ScoreUpdater implements Updater{
         this.scoreKeeper.attach(this);
     }
     @Override
-    public void update(int newScore) {
-        scoreKeeper.setScore(newScore);
+    public void update(String newScore) {
+        scoreKeeper.setScore(Integer.parseInt(newScore));
         
     }
 }
