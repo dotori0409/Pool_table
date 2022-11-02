@@ -59,6 +59,7 @@ public class GameManager {
     private boolean reset_flag = false;
     private Button undo = new Button("Undo");
     private boolean doneUndo = false;
+    private boolean ballRemoved = false;
     private ArrayList<Ball> savedBalls;
    
     private final double TABLEBUFFER = Config.getTableBuffer();
@@ -257,6 +258,7 @@ public class GameManager {
                                 double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                                 if (otherBall != ball && otherBall.isActive() && distance < 10) {
                                     ball.remove();
+                                    ballRemoved = true;
                                     savedBalls = new ArrayList<>(balls);
                                     savedTimeDisplay = timer.getTime();
                                     savedScore = scoreKeeper.getScore();
@@ -419,7 +421,8 @@ public class GameManager {
     private void setClickEvents(Pane pane) {
         
         pane.setOnMousePressed(event -> {
-            cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+            // cue = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+            cue = CueStickSingleton.getInstance(event);
             cueSet = false;
             cueActive = true;
         });
@@ -449,28 +452,15 @@ public class GameManager {
 
         undo.setOnAction(e ->{
             if(!doneUndo){
-                if(savedBalls != null){
-                    for(Ball ball: savedBalls){
-                            if(cheat.getDoneCheat()){
-                                timer.setTime(cheat.getSavedTime());
-                                scoreKeeper.setScore(cheat.getSavedScore());
-                                cheat.setDoneCheatFalse();
-                            } else {
-                                if(caretaker.getMemento(ball).getState().size()>1){
-                                    scoreKeeper.setScore(savedScore);
-                                    doneUndo = true;
-                                    revertBalls(ball, record);
-                                    ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());
-                                    ball.setyPos(caretaker.getMemento(ball).getState().get(record-1).getY());
-                                }
-                                timer.setTime(cheat.getSavedTime());
-                                scoreKeeper.setScore(cheat.getSavedScore());
-                            }
-                    }
-                    record--;
+                if(cheat.getDoneCheat()){
+                    timer.setTime(cheat.getSavedTime());
+                    scoreKeeper.setScore(cheat.getSavedScore());
+                    cheat.setDoneCheatFalse();
                     balls = new ArrayList<>(savedBalls);
-                    savedBalls = null;
                 } else {
+                    if (ballRemoved){
+                        balls = new ArrayList<>(savedBalls);
+                    }
                     for(Ball ball: balls){
                         if(caretaker.getMemento(ball).getState().size()>1){
                             timer.setTime(savedTimeDisplay);
@@ -482,6 +472,10 @@ public class GameManager {
                         }
                     }
                     record--;
+                }
+
+                if(winFlag){
+                    winFlag = false;
                 }
             } else {
                 System.out.println("You've already undone");

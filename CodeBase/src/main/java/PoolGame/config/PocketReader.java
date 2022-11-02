@@ -49,18 +49,12 @@ public class PocketReader implements Reader {
 				Double radius = (Double) jsonPocket.get("radius");
 
 				// Builder code
-				// PoolPocketBuilder builder = new PoolPocketBuilder();
-				// builder.setxPos(positionX);
-				// builder.setyPos(positionY);
-				// builder.setRadius(radius);
+				PoolPocketBuilder builder = new PoolPocketBuilder();
+				builder.setxPos(positionX);
+				builder.setyPos(positionY);
+				builder.setRadius(radius);
 
-				// pockets.add(builder.build());
-				pockets.add(new Pocket(10, 10,10));
-				pockets.add(new Pocket(600 - 10, 10,10));
-				pockets.add(new Pocket(600 / 2, 10,10));
-				pockets.add(new Pocket(10, 400 - 10,10));
-				pockets.add(new Pocket(600 - 10, 400 - 10,10));
-				pockets.add(new Pocket(600 / 2, 400 - 10,10));
+				pockets.add(builder.build());
 			}
 
 			gameManager.setPockets(pockets);

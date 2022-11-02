@@ -119,6 +119,7 @@ public class Cheat {
         savedScore = scoreKeeper.getScore();
         savedTimeDisplay = timer.getTime();
         List<Ball> toRemove = new ArrayList<>();
+        System.out.println(balls.size());
         for (Ball ball : balls) {
             if (ball.getColour() == colour) {
                 scoreKeeper.addScore(ball.getScore(ball.getColour()));
