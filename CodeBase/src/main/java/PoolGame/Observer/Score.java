@@ -1,8 +1,6 @@
-package PoolGame.objects;
+package PoolGame.Observer;
 
-import PoolGame.Observer.Updater;
-
-public class Score {
+public class Score implements Keeper{
     private Updater scoreUpdate;
     private int score;
 

@@ -1,13 +1,13 @@
-package PoolGame.objects.Timer;
+package PoolGame.Observer.Timer;
 
-import PoolGame.Observer.TimeUpdater;
+import PoolGame.Observer.Keeper;
 import PoolGame.Observer.Updater;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class Timer {
+public class Timer implements Keeper{
     private Updater timeUpdater;
     private Text timer;
     private Counter count;

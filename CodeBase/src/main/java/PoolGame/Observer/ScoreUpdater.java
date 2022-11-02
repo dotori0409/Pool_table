@@ -1,7 +1,5 @@
 package PoolGame.Observer;
 
-import PoolGame.objects.Score;
-
 public class ScoreUpdater implements Updater{
     private Score scoreKeeper;
 

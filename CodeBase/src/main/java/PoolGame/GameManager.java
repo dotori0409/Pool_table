@@ -1,10 +1,11 @@
 package PoolGame;
 
+import PoolGame.Observer.Score;
 import PoolGame.Observer.ScoreUpdater;
 import PoolGame.Observer.TimeUpdater;
 import PoolGame.Observer.Updater;
+import PoolGame.Observer.Timer.Timer;
 import PoolGame.objects.*;
-import PoolGame.objects.Timer.Timer;
 import PoolGame.strategy.Cheat;
 import PoolGame.strategy.undo.BallCareTaker;
 import PoolGame.strategy.undo.BallMemento;

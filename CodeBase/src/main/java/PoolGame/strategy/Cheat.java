@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import PoolGame.Observer.Score;
 import PoolGame.Observer.ScoreUpdater;
 import PoolGame.Observer.Updater;
+import PoolGame.Observer.Timer.Timer;
 import PoolGame.objects.Ball;
-import PoolGame.objects.Score;
 import PoolGame.objects.Table;
-import PoolGame.objects.Timer.Timer;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Paint;
 

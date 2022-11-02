@@ -1,4 +1,4 @@
-package PoolGame.objects.Timer;
+package PoolGame.Observer.Timer;
 
 public class Counter {
     private int min;

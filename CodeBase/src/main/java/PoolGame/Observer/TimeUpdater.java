@@ -1,6 +1,6 @@
 package PoolGame.Observer;
 
-import PoolGame.objects.Timer.Timer;
+import PoolGame.Observer.Timer.Timer;
 
 public class TimeUpdater implements Updater{
     private Timer timer;
