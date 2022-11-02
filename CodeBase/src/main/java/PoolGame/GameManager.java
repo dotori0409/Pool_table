@@ -1,6 +1,7 @@
 package PoolGame;
 
 import PoolGame.Observer.ScoreUpdater;
+import PoolGame.Observer.TimeUpdater;
 import PoolGame.Observer.Updater;
 import PoolGame.objects.*;
 import PoolGame.objects.Timer.Timer;
@@ -70,7 +71,8 @@ public class GameManager {
 
     private Cheat cheat;
 
-    private Updater updater = new ScoreUpdater(scoreKeeper);
+    private Updater scoreUpdater = new ScoreUpdater(scoreKeeper);
+    private Updater timeUpdater;
 
     private Scene scene;
     private GraphicsContext gc;
@@ -111,6 +113,7 @@ public class GameManager {
         pane.getChildren().add(text);
         //initiaize timer
         timer = new Timer(pane);
+        timeUpdater = new TimeUpdater(timer);
         //initiaize data for record and caretaker
         for(Ball ball: balls){
             savedBalls = new ArrayList<>(balls);
@@ -252,7 +255,7 @@ public class GameManager {
                         reset_flag = true;
                     } else {
                         if (ball.remove()) {
-                            updater.update(String.valueOf(ball.getScore(ball.getColour())+scoreKeeper.getScore()));
+                            scoreUpdater.update(String.valueOf(ball.getScore(ball.getColour())+scoreKeeper.getScore()));
                         } else {
                             // Check if when ball is removed, any other balls are present in its space. (If
                             // another ball is present, blue ball is removed)
@@ -457,8 +460,8 @@ public class GameManager {
         undo.setOnAction(e ->{
             if(!doneUndo){
                 if(cheat.getDoneCheat()){
-                    timer.setTime(cheat.getSavedTime());
-                    updater.update(String.valueOf(cheat.getSavedScore()));
+                    timeUpdater.update(cheat.getSavedTime());
+                    scoreUpdater.update(String.valueOf(cheat.getSavedScore()));
                     cheat.setDoneCheatFalse();
                     balls = new ArrayList<>(savedBalls);
                 } else {
@@ -467,8 +470,8 @@ public class GameManager {
                     }
                     for(Ball ball: balls){
                         if(caretaker.getMemento(ball).getState().size()>1){
-                            timer.setTime(savedTimeDisplay);
-                            updater.update(String.valueOf(savedScore));
+                            timeUpdater.update(savedTimeDisplay);
+                            scoreUpdater.update(String.valueOf(savedScore));
                             doneUndo = true;
                             revertBalls(ball, record);
                             ball.setxPos(caretaker.getMemento(ball).getState().get(record-1).getX());

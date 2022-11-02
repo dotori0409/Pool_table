@@ -1,11 +1,14 @@
 package PoolGame.objects.Timer;
 
+import PoolGame.Observer.TimeUpdater;
+import PoolGame.Observer.Updater;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class Timer {
+    private Updater timeUpdater;
     private Text timer;
     private Counter count;
 
@@ -46,5 +49,14 @@ public class Timer {
         timer.setText(savedTime);
         count.setMin(Integer.parseInt(savedTime.split(":")[0].split(" ")[1]));
         count.setSec(Integer.parseInt(savedTime.split(": ")[1]));
+    }
+
+    public void attach(Updater timeUpdater){
+        this.timeUpdater = timeUpdater;
+    }
+
+    public void notifyUpdater(){
+        String time = getTime();
+        timeUpdater.update(time);
     }
 }
