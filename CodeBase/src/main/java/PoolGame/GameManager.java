@@ -7,9 +7,9 @@ import PoolGame.Observer.Updater;
 import PoolGame.Observer.Timer.Timer;
 import PoolGame.objects.*;
 import PoolGame.strategy.Cheat;
-import PoolGame.strategy.undo.BallCareTaker;
-import PoolGame.strategy.undo.BallMemento;
-import PoolGame.strategy.undo.BallRecord;
+import PoolGame.undo.BallCareTaker;
+import PoolGame.undo.BallMemento;
+import PoolGame.undo.BallRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;

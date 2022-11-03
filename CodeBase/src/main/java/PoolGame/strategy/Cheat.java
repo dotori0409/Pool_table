@@ -135,7 +135,7 @@ public class Cheat {
    }
 
    /**
-     * To the task of removing balls
+     * To the cheat task of removing balls
      * @param colour
      * @param balls
     */
@@ -152,26 +152,49 @@ public class Cheat {
         balls.removeAll(toRemove);
     }
 
+    /**
+     * Returns the cheatButton variable
+     * @return cheatButton
+    */
     public Button getCheatButton(){
         return cheatButton;
     }
 
+    /**
+     * Returns the boolean doneCheat variable
+     * @return doneCheat
+    */
     public boolean getDoneCheat(){
         return doneCheat;
     }
 
+    /**
+     * Set the doneCheat variable to be false
+    */
     public void setDoneCheatFalse(){
         this.doneCheat = false;
     }
 
+    /**
+     * Returns the savedScore
+     * @return savedScore
+    */
     public int getSavedScore(){
         return savedScore;
     }
 
+    /**
+     * Returns the savedTimeDisplay varibale
+     * @return savedTimeDisplay
+    */
     public String getSavedTime(){
         return savedTimeDisplay;
     }
 
+    /**
+     * Returns the cheatNextButton variable
+     * @return cheatNextButton
+    */
     public Button getNextButton(){
         return cheatNextButton;
     }

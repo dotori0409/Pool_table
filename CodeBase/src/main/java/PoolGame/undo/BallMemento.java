@@ -1,18 +1,24 @@
-package PoolGame.strategy.undo;
+package PoolGame.undo;
 
 import java.util.Map;
 
 import javafx.geometry.Point2D;
 
+/**
+ * Involved in the value object that acts as a snapshot of the originator’s state
+ */
 public class BallMemento {
-    //encapsulation 
     private Map<Integer, Point2D> state;
 
-    //immutable! data only passed in once, via the constructor.
+    /**
+     * Initialize state variable
+     */
     public BallMemento(Map<Integer, Point2D> state) 
     { this.state = state; } 
 
-    //USed to modify memento data
+    /**
+     * USed to modify memento data
+     */
     public Map<Integer, Point2D> getState() {
         return state;
     }

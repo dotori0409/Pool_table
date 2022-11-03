@@ -2,7 +2,6 @@ package PoolGame.objects;
 
 /** Builds pool balls. */
 public class PoolPocketBuilder implements PocketBuilder {
-    // Required Parameters
     private double xPosition;
     private double yPosition;
     private double radius;
@@ -23,9 +22,9 @@ public class PoolPocketBuilder implements PocketBuilder {
     };
 
     /**
-     * Builds the ball.
+     * Builds the pocket.
      * 
-     * @return ball
+     * @return Pocket
      */
     public Pocket build() {
         return new Pocket(xPosition, yPosition,radius);

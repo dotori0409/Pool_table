@@ -9,6 +9,13 @@ public class Pocket {
     private double yPosition;
     private double radius;
 
+    /**
+     * Initialize variables
+     * 
+     * @param x position.
+     * @param y position.
+     * @param raidius
+     */
     public Pocket(double xPosition, double yPosition, double radius) {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
